@@ -1,2 +1,3 @@
 # v11-bears-team-05
-Add-project-description-here | Voyage-11 | https://chingu.io/ | Twitter: https://twitter.com/ChinguCollabs
+
+A project to search for and vote on restaurants as a group, to select one for an event | Voyage-11 | https://chingu.io/
