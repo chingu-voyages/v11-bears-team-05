@@ -1,12 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { LOGOUT } from '../../constants';
+import { Link, withRouter } from 'react-router-dom';
 import {
   Collapse,
   Navbar,
   NavbarToggler,
   NavbarBrand,
   Nav,
-  NavItem
+  NavItem,
+  Button
 } from 'reactstrap';
 
 import './CustomNavbarStyles.scss';
@@ -22,7 +25,15 @@ class CustomNavbar extends React.Component {
     });
   };
 
+  logout = () => {
+    const { logout, history } = this.props;
+    logout();
+    history.push('/');
+  };
+
   render() {
+    const { loggedIn } = this.props;
+
     return (
       <div>
         <Navbar color='light' light expand='md'>
@@ -30,12 +41,31 @@ class CustomNavbar extends React.Component {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className='ml-auto' navbar>
-              <NavItem>
-                <Link to='/'>Home</Link>
-              </NavItem>
-              <NavItem>
-                <Link to='/login'>Login</Link>
-              </NavItem>
+              {loggedIn ? (
+                <>
+                  <NavItem>
+                    <Link to='/main'>Home</Link>
+                  </NavItem>
+                  <NavItem>
+                    <Button
+                      color='link'
+                      className='logout-link'
+                      onClick={this.logout}
+                    >
+                      Logout
+                    </Button>
+                  </NavItem>
+                </>
+              ) : (
+                <>
+                  <NavItem>
+                    <Link to='/register'>Register</Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link to='/login'>Login</Link>
+                  </NavItem>
+                </>
+              )}
             </Nav>
           </Collapse>
         </Navbar>
@@ -44,4 +74,15 @@ class CustomNavbar extends React.Component {
   }
 }
 
-export default CustomNavbar;
+const mapStateToProps = state => ({ loggedIn: state.loginReducer.loggedIn });
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch({ type: LOGOUT })
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CustomNavbar)
+);

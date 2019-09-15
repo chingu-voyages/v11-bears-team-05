@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { LOGIN } from '../../constants';
-import { INCOMPLETE_LOGIN } from '../../errorConstants';
+import { INCOMPLETE_REGISTRATION } from '../../errorConstants';
+
 import {
   Col,
   Button,
@@ -9,12 +10,14 @@ import {
   FormGroup,
   Label,
   Input,
-  Row,
-  Container
+  Container,
+  Row
 } from 'reactstrap';
 
-class Login extends React.Component {
+class Register extends React.Component {
   state = {
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     error: ''
@@ -25,26 +28,27 @@ class Login extends React.Component {
   };
 
   submitForm = () => {
-    // use axios to connect to the back end and check the given login and password
-    // if the login was successful, dispatch an action to save the Id to the state, then redirect to the main
-    // page
-    const { email, password } = this.state;
+    // use axios to submit the registration
+    // if it's successful, dispatch the login action and redirect
+    const { firstName, lastName, email, password } = this.state;
     const { login, history } = this.props;
 
-    if (!email || !password) {
-      this.setState({ error: INCOMPLETE_LOGIN });
+    if (!firstName || !lastName || !email || !password) {
+      this.setState({ error: INCOMPLETE_REGISTRATION });
     } else {
-      const user = {
+      const newUser = {
+        firstName,
+        lastName,
         email,
         password
       };
 
-      console.log(user);
+      console.log(newUser);
 
       // let's assume we were able to register successfully
-      let loggedInSuccessfully = true;
+      let registeredSuccessfully = true;
 
-      if (loggedInSuccessfully) {
+      if (registeredSuccessfully) {
         login(123);
         history.push('/main');
       }
@@ -58,9 +62,39 @@ class Login extends React.Component {
       <Container>
         <Row>
           <Col>
-            <h1>Login</h1>
+            <h1>Register</h1>
             {error ? <h3>Error: {error}</h3> : null}
             <Form>
+              <FormGroup row>
+                <Label for='firstName' sm={6}>
+                  First Name
+                </Label>
+                <Col sm={6}>
+                  <Input
+                    type='text'
+                    name='firstName'
+                    id='firstName'
+                    value={this.state.firstName}
+                    onChange={this.handleChange}
+                    required
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label for='lastName' sm={6}>
+                  Last Name
+                </Label>
+                <Col sm={6}>
+                  <Input
+                    type='text'
+                    name='lastName'
+                    id='lastName'
+                    value={this.state.lastName}
+                    onChange={this.handleChange}
+                    required
+                  />
+                </Col>
+              </FormGroup>
               <FormGroup row>
                 <Label for='email' sm={6}>
                   Email
@@ -72,6 +106,7 @@ class Login extends React.Component {
                     id='email'
                     value={this.state.email}
                     onChange={this.handleChange}
+                    required
                   />
                 </Col>
               </FormGroup>
@@ -86,12 +121,13 @@ class Login extends React.Component {
                     id='password'
                     value={this.state.password}
                     onChange={this.handleChange}
+                    required
                   />
                 </Col>
               </FormGroup>
               <FormGroup check row>
                 <Button color='primary' onClick={this.submitForm}>
-                  Login
+                  Register
                 </Button>
               </FormGroup>
             </Form>
@@ -114,4 +150,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login);
+)(Register);
