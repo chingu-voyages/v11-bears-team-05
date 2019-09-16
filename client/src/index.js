@@ -11,8 +11,6 @@ import './styles/appStyle.scss';
 const store = configureStore();
 
 // will fire whenever state changes
-// need next line to successfully compile
-// eslint-disable-next-line
 const unsubscribe = store.subscribe( () => {
   console.log('New state is ', store.getState());
 });
