@@ -1,3 +1,8 @@
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+
+
+
 export const INCOMPLETE_REGISTRATION =
   'Please complete all fields to register.';
 export const INCOMPLETE_LOGIN = 'Please complete all fields to login.';

@@ -10,7 +10,7 @@ import {
   Input
 } from 'reactstrap';
 
-import { INCOMPLETE_NEW_EVENT } from '../../errorConstants';
+import { INCOMPLETE_NEW_EVENT } from '../../actions/types';
 
 class NewEvent extends React.Component {
   state = {
