@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { LOGOUT } from '../../constants';
 import { Link, withRouter } from 'react-router-dom';
 import {
   Collapse,
@@ -12,7 +11,7 @@ import {
   Button
 } from 'reactstrap';
 
-import './CustomNavbarStyles.scss';
+import { logoutUser } from '../../actions/actions'
 
 class CustomNavbar extends React.Component {
   state = {
@@ -77,7 +76,7 @@ class CustomNavbar extends React.Component {
 const mapStateToProps = state => ({ loggedIn: state.loginReducer.loggedIn });
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch({ type: LOGOUT })
+  logout: () => dispatch(logoutUser())
 });
 
 export default withRouter(

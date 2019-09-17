@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { LOGIN } from '../../constants';
-import { INCOMPLETE_LOGIN } from '../../errorConstants';
+import { INCOMPLETE_LOGIN } from '../../actions/types';
+import { loginUser } from '../../actions/actions'
+
 import {
   Col,
   Button,
@@ -108,7 +109,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  login: loginId => dispatch({ type: LOGIN, payload: loginId })
+  login: loginId => dispatch(loginUser(loginId))
 });
 
 export default connect(

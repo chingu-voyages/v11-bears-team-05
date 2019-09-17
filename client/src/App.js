@@ -9,7 +9,6 @@ import NewEvent from './components/NewEvent/NewEvent';
 import Event from './components/Event/Event';
 import JoinEvent from './components/JoinEvent/JoinEvent';
 
-import './App.css';
 
 function App() {
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Button, InputGroup, Input } from 'reactstrap';
-import { FRIENDS_NAME_INCOMPLETE } from '../../errorConstants';
-import './EventStyles.scss';
+import { FRIENDS_NAME_INCOMPLETE } from '../../actions/types';
+
 
 class Event extends React.Component {
   state = {
