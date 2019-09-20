@@ -1,0 +1,11 @@
+// variables
+// no need for underscore before filename
+@import 'base/variables';
+
+// components
+@import 'components/CustomNavbarStyles';
+@import 'components/EventStyles';
+
+// base css files for index.js and App.jsx
+@import 'base/index';
+@import 'base/App';
