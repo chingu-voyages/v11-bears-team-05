@@ -3,10 +3,14 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const config = require('./config/config');
 
-require('./models/User');
+var { User } = require('./models/User');
+var { Group } = require('./models/Group');
+// require('./models/User');
+// require('./models/Group');
 mongoose.connect(config.mongodb.dbURI, { useNewUrlParser: true });
 
-const User = mongoose.model('User');
+// const User = mongoose.model('User');
+// const Group = mongoose.model('Group');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,4 +43,20 @@ app.post('/api/users', (req, res) => {
     .catch(err => {
       res.status(400).send(err);
     });
+});
+
+app.post('/api/groups', (req, res) => {
+  var group = new Group({
+    name: req.body.name,
+    _creator: req.user._id,
+    coordinates: [req.coordinates[0], req.coordinates[1]],
+    status: 'Active Voting'
+  });
+
+  group.save().then(doc => {
+    res.send(doc);
+  }),
+    err => {
+      res.status(400).send(err);
+    };
 });
