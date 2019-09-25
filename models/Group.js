@@ -46,8 +46,8 @@ const GroupSchema = new mongoose.Schema({
 });
 
 //this creates a model class
-const Group = mongoose.model('Group', GroupSchema);
-module.exports = { Group };
+// const Group = mongoose.model('Group', GroupSchema);
+// module.exports = { Group };
 //in index.js, its:
 // var { User } = require('./models/User');
 
@@ -56,3 +56,5 @@ module.exports = { Group };
 // const Group = mongoose.model('Group');
 // it would be this instead
 // module.exports = Group;
+
+mongoose.model('groups', GroupSchema);

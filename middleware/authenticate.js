@@ -1,4 +1,5 @@
-var { User } = require('./../models/user');
+const mongoose = require('mongoose');
+const User = mongoose.model('users');
 
 var authenticate = (req, res, next) => {
   var token = req.header('x-auth');
@@ -17,4 +18,4 @@ var authenticate = (req, res, next) => {
     });
 };
 
-module.exports = { authenticate };
+module.exports = authenticate;
