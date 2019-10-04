@@ -1,7 +1,8 @@
 import React from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { INCOMPLETE_REGISTRATION } from '../../actions/types';
-import { loginUser } from '../../actions/actions'
+import { loginUser } from '../../actions/actions';
 
 import {
   Col,
@@ -16,8 +17,8 @@ import {
 
 class Register extends React.Component {
   state = {
-    firstName: '',
-    lastName: '',
+    nameFirst: '',
+    nameLast: '',
     email: '',
     password: '',
     error: ''
@@ -30,28 +31,34 @@ class Register extends React.Component {
   submitForm = () => {
     // use axios to submit the registration
     // if it's successful, dispatch the login action and redirect
-    const { firstName, lastName, email, password } = this.state;
+    const { nameFirst, nameLast, email, password } = this.state;
     const { login, history } = this.props;
+    let authKey = '';
 
-    if (!firstName || !lastName || !email || !password) {
+    if (!nameFirst || !nameLast || !email || !password) {
       this.setState({ error: INCOMPLETE_REGISTRATION });
     } else {
       const newUser = {
-        firstName,
-        lastName,
+        nameFirst,
+        nameLast,
         email,
         password
       };
 
-      console.log(newUser);
-
-      // let's assume we were able to register successfully
-      let registeredSuccessfully = true;
-
-      if (registeredSuccessfully) {
-        login(123);
-        history.push('/main');
-      }
+      axios
+        .post('api/users', newUser)
+        .then(response => {
+          localStorage.setItem('key', response.data.tokens[0].token);
+          authKey = response.data.tokens[0].token;
+          login(authKey);
+          history.push('/main');
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({
+            error: 'There was an error registering, please try again.'
+          });
+        });
     }
   };
 
@@ -66,30 +73,30 @@ class Register extends React.Component {
             {error ? <h3>Error: {error}</h3> : null}
             <Form>
               <FormGroup row>
-                <Label for='firstName' sm={6}>
+                <Label for='nameFirst' sm={6}>
                   First Name
                 </Label>
                 <Col sm={6}>
                   <Input
                     type='text'
-                    name='firstName'
-                    id='firstName'
-                    value={this.state.firstName}
+                    name='nameFirst'
+                    id='nameFirst'
+                    value={this.state.nameFirst}
                     onChange={this.handleChange}
                     required
                   />
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <Label for='lastName' sm={6}>
+                <Label for='nameLast' sm={6}>
                   Last Name
                 </Label>
                 <Col sm={6}>
                   <Input
                     type='text'
-                    name='lastName'
-                    id='lastName'
-                    value={this.state.lastName}
+                    name='nameLast'
+                    id='nameLast'
+                    value={this.state.nameLast}
                     onChange={this.handleChange}
                     required
                   />

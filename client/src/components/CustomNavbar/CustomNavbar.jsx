@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import {
@@ -11,7 +12,7 @@ import {
   Button
 } from 'reactstrap';
 
-import { logoutUser } from '../../actions/actions'
+import { logoutUser } from '../../actions/actions';
 
 class CustomNavbar extends React.Component {
   state = {
@@ -26,8 +27,21 @@ class CustomNavbar extends React.Component {
 
   logout = () => {
     const { logout, history } = this.props;
-    logout();
-    history.push('/');
+
+    axios
+      .post('api/users/logout', null, {
+        headers: { 'x-auth': localStorage.getItem('key') }
+      })
+      .then(response => {
+        logout();
+        history.push('/');
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          error: 'There was an error logging out, please try again.'
+        });
+      });
   };
 
   render() {

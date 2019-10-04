@@ -1,16 +1,14 @@
-import { LOGIN, INCOMPLETE_LOGIN, LOGOUT } from './types';
+import { LOGIN, LOGOUT } from './types';
 
-
-export const loginUser = (data) => {
-    return {
-      type: LOGIN,
-      payload: data
-    }
-  
-  }
+export const loginUser = data => {
+  return {
+    type: LOGIN,
+    payload: data
+  };
+};
 
 export const logoutUser = () => {
-    return {
-        type: LOGOUT
-    }
-}
+  return {
+    type: LOGOUT
+  };
+};
