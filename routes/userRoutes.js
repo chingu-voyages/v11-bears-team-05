@@ -12,12 +12,12 @@ module.exports = app => {
     const nameLast = req.body.nameLast;
     const email = req.body.email;
     const password = req.body.password;
-    console.log(req.body);
+    //console.log(req.body);
     var user = new User({ nameFirst, nameLast, email, password });
 
     try {
       await user.save();
-      console.log('user saved');
+      //  console.log('user saved');
       const token = await user.generateAuthToken();
       res.status(201).send({ user, token });
     } catch (e) {
@@ -28,7 +28,7 @@ module.exports = app => {
 
   router.post('/users/login', async (req, res) => {
     //new way of doing this
-    console.log('in /users/loging', req.body);
+    //console.log('in /users/loging', req.body);
 
     try {
       const user = await User.findByCredentials(
@@ -54,15 +54,26 @@ module.exports = app => {
   });
 
   router.get('/users/me', auth, (req, res) => {
+    console.log('me called');
     res.send(req.user);
   });
 
   router.post('/users/logout', auth, async (req, res) => {
-    console.log('/users/logout called');
+    //console.log('/users/logout called');
     try {
       req.user.tokens = req.user.tokens.filter(token => {
         return token.token !== req.token;
       });
+      await req.user.save();
+      res.send();
+    } catch (e) {
+      res.status(500).send();
+    }
+  });
+
+  router.post('/users/logoutAll', auth, async (req, res) => {
+    try {
+      req.user.tokens = [];
       await req.user.save();
       res.send();
     } catch (e) {

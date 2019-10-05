@@ -6,8 +6,9 @@ const config = require('../config/config');
 
 const authenticate = async (req, res, next) => {
   //new way
+  console.log('authentication: ', req.headers);
   try {
-    const token = req.header('x-auth');
+    const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, config.JWT_SECRET);
     const user = await User.findOne({
       _id: decoded._id,
@@ -17,7 +18,7 @@ const authenticate = async (req, res, next) => {
     if (!user) {
       throw new Error();
     }
-
+    req.token = token;
     req.user = user;
     next();
   } catch (e) {
@@ -25,19 +26,19 @@ const authenticate = async (req, res, next) => {
   }
 
   //old way
-  const token = req.header('x-auth');
-  User.findByToken(token)
-    .then(user => {
-      if (!user) {
-        return Promise.reject();
-      }
-      req.user = user;
-      req.token = token;
-      next();
-    })
-    .catch(e => {
-      res.status(401).send();
-    });
+  // const token = req.header('x-auth');
+  // User.findByToken(token)
+  //   .then(user => {
+  //     if (!user) {
+  //       return Promise.reject();
+  //     }
+  //     req.user = user;
+  //     req.token = token;
+  //     next();
+  //   })
+  //   .catch(e => {
+  //     res.status(401).send();
+  //   });
 };
 
 module.exports = authenticate;

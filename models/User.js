@@ -31,6 +31,16 @@ const UserSchema = new mongoose.Schema({
 });
 
 //instance method that we call on a specifc instance of user, not the User model
+UserSchema.methods.toJSON = function() {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject.tokens;
+
+  return userObject;
+};
+
 UserSchema.methods.generateAuthToken = async function() {
   var user = this;
 
