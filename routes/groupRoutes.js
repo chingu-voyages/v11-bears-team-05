@@ -7,20 +7,43 @@ const auth = require('../middleware/authenticate');
 module.exports = app => {
   const router = express.Router();
 
-  router.post('/groups', auth, (req, res) => {
+  router.post('/groups', auth, async (req, res) => {
     var group = new Group({
       name: req.body.name,
       _creator: req.user._id,
-      coordinates: [req.coordinates[0], req.coordinates[1]],
+      coordinates: [req.body.coordinates[0], req.body.coordinates[1]],
       status: 'Active Voting'
     });
 
-    group.save().then(doc => {
-      res.send(doc);
-    }),
-      err => {
-        res.status(400).send(err);
-      };
+    try {
+      await group.save();
+      res.status(201).send(group);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  });
+
+  router.get('/groups', async (req, res) => {
+    try {
+      const groups = await Group.find({});
+      res.send(groups);
+    } catch (e) {
+      res.status(500).send();
+    }
+  });
+
+  router.get('/groups/:id', async (req, res) => {
+    const _id = req.params._id;
+
+    try {
+      const group = await Group.findById(_id);
+      if (!group) {
+        return res.status(404).send();
+      }
+      res.send(group);
+    } catch (e) {
+      res.status(500).send();
+    }
   });
 
   app.use('/api', router);

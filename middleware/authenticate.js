@@ -1,9 +1,31 @@
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
 
-var authenticate = (req, res, next) => {
-  var token = req.header('x-auth');
+const config = require('../config/config');
 
+const authenticate = async (req, res, next) => {
+  //new way
+  try {
+    const token = req.header('x-auth');
+    const decoded = jwt.verify(token, config.JWT_SECRET);
+    const user = await User.findOne({
+      _id: decoded._id,
+      'tokens.token': token
+    });
+
+    if (!user) {
+      throw new Error();
+    }
+
+    req.user = user;
+    next();
+  } catch (e) {
+    res.status(401).send({ error: 'Please authenticate.' });
+  }
+
+  //old way
+  const token = req.header('x-auth');
   User.findByToken(token)
     .then(user => {
       if (!user) {

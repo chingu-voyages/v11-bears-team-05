@@ -7,36 +7,54 @@ const auth = require('../middleware/authenticate');
 module.exports = app => {
   const router = express.Router();
 
-  router.post('/users', (req, res) => {
+  router.post('/users', async (req, res) => {
     const nameFirst = req.body.nameFirst;
     const nameLast = req.body.nameLast;
     const email = req.body.email;
     const password = req.body.password;
-
+    console.log(req.body);
     var user = new User({ nameFirst, nameLast, email, password });
-    user
-      .save()
-      .then(() => {
-        return user.generateAuthToken();
-      })
-      .then(token => {
-        res.header('x-auth', token).send(user);
-      })
-      .catch(err => {
-        res.status(400).send(err);
-      });
+
+    try {
+      await user.save();
+      console.log('user saved');
+      const token = await user.generateAuthToken();
+      res.status(201).send({ user, token });
+    } catch (e) {
+      console.log(('/post users error:', e));
+      res.status(400).send(e);
+    }
   });
 
-  router.post('/users/login', (req, res) => {
-    User.findByCredentials(req.body.email, req.body.password)
-      .then(user => {
-        return user.generateAuthToken().then(token => {
-          res.header('x-auth', token).send(user);
-        });
-      })
-      .catch(e => {
-        res.status(400).send(e);
-      });
+  router.post('/users/login', async (req, res) => {
+    //new way of doing this
+    console.log('in /users/loging', req.body);
+
+    try {
+      const user = await User.findByCredentials(
+        req.body.email,
+        req.body.password
+      );
+
+      const token = await user.generateAuthToken();
+      res.send({ user, token });
+    } catch (e) {
+      res.status(400).send(e);
+    }
+
+    // User.findByCredentials(req.body.email, req.body.password)
+    //   .then(user => {
+    //     return user.generateAuthToken().then(token => {
+    //       res.header('x-auth', token).send(user);
+    //     });
+    //   })
+    //   .catch(e => {
+    //     res.status(400).send(e);
+    //   });
+  });
+
+  router.get('/users/me', auth, (req, res) => {
+    res.send(req.user);
   });
 
   router.post('/users/logout', auth, async (req, res) => {
@@ -52,5 +70,8 @@ module.exports = app => {
     }
   });
 
+  router.patch('/users/:id', async (req, res) => {
+    // const updates = Object.keys
+  });
   app.use('/api', router);
 };
