@@ -1,7 +1,8 @@
 import React from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { INCOMPLETE_LOGIN } from '../../actions/types';
-import { loginUser } from '../../actions/actions'
+import { loginUser } from '../../actions/actions';
 
 import {
   Col,
@@ -31,6 +32,7 @@ class Login extends React.Component {
     // page
     const { email, password } = this.state;
     const { login, history } = this.props;
+    let authKey = '';
 
     if (!email || !password) {
       this.setState({ error: INCOMPLETE_LOGIN });
@@ -40,15 +42,20 @@ class Login extends React.Component {
         password
       };
 
-      console.log(user);
-
-      // let's assume we were able to register successfully
-      let loggedInSuccessfully = true;
-
-      if (loggedInSuccessfully) {
-        login(123);
-        history.push('/main');
-      }
+      axios
+        .post('api/users/login', user)
+        .then(response => {
+          localStorage.setItem('key', response.data.tokens[0].token);
+          authKey = response.data.tokens[0].token;
+          login(authKey);
+          history.push('/main');
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({
+            error: 'There was an error logging in, please try again.'
+          });
+        });
     }
   };
 
