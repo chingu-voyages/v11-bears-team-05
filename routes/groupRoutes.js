@@ -8,10 +8,11 @@ module.exports = app => {
   const router = express.Router();
 
   router.post('/groups', auth, async (req, res) => {
+    console.log('/groups called', req.body.coordinates[0]);
     var group = new Group({
       name: req.body.name,
       _creator: req.user._id,
-      coordinates: [req.body.coordinates[0], req.body.coordinates[1]],
+      location: { type: 'Point', coordinates: req.body.coordinates },
       status: 'Active Voting'
     });
 

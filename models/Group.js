@@ -26,7 +26,7 @@ const GroupSchema = new mongoose.Schema({
       category: String
     }
   ],
-  status: { type: mongoose.Schema.ObjectId, ref: 'Status' },
+  status: String,
   winCategory: String,
   winRestaurant: {
     name: String,

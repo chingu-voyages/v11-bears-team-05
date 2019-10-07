@@ -6,7 +6,7 @@ const config = require('../config/config');
 
 const authenticate = async (req, res, next) => {
   //new way
-  console.log('authentication: ', req.headers);
+  // console.log('authentication: ', req.headers);
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, config.JWT_SECRET);

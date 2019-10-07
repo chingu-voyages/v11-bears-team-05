@@ -7,6 +7,15 @@ const auth = require('../middleware/authenticate');
 module.exports = app => {
   const router = express.Router();
 
+  router.get('/users', auth, async (req, res) => {
+    try {
+      const users = await User.find({});
+      res.send(users);
+    } catch (e) {
+      res.status(500).send();
+    }
+  });
+
   router.post('/users', async (req, res) => {
     const nameFirst = req.body.nameFirst;
     const nameLast = req.body.nameLast;
