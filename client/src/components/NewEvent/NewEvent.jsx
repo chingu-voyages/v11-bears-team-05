@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {
   Container,
   Row,
@@ -23,26 +24,38 @@ class NewEvent extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  geoSuccess = position => {
+    const { eventName } = this.state;
+    const { addGroup, history } = this.props;
+
+    const newEvent = {
+      name: eventName,
+      coordinates: [position.coords.latitude, position.coords.longitude]
+    };
+
+    axios
+      .post('api/groups', newEvent, {
+        headers: { Authorization: localStorage.getItem('key') }
+      })
+      .then(response => {
+        addGroup(newEvent);
+        history.push('/main');
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          error: 'There was an error creating the group, please try again.'
+        });
+      });
+  };
+
   submitForm = () => {
     const { eventName, eventDate } = this.state;
-    const { history } = this.props;
 
     if (!eventName || !eventDate) {
       this.setState({ error: INCOMPLETE_NEW_EVENT });
     } else {
-      const newEvent = {
-        eventName,
-        eventDate
-      };
-
-      console.log(newEvent);
-
-      // let's assume we were able to add an event successfully
-      let eventAddedSuccessfully = true;
-
-      if (eventAddedSuccessfully) {
-        history.push('/main');
-      }
+      navigator.geolocation.getCurrentPosition(this.geoSuccess);
     }
   };
 
