@@ -33,7 +33,6 @@ class Register extends React.Component {
     // if it's successful, dispatch the login action and redirect
     const { nameFirst, nameLast, email, password } = this.state;
     const { login, history } = this.props;
-    let authKey = '';
 
     if (!nameFirst || !nameLast || !email || !password) {
       this.setState({ error: INCOMPLETE_REGISTRATION });
@@ -48,9 +47,9 @@ class Register extends React.Component {
       axios
         .post('api/users', newUser)
         .then(response => {
-          localStorage.setItem('key', response.data.tokens[0].token);
-          authKey = response.data.tokens[0].token;
-          login(authKey);
+          localStorage.setItem('key', response.data.token);
+          let userId = response.data.user._id;
+          login(userId);
           history.push('/main');
         })
         .catch(err => {

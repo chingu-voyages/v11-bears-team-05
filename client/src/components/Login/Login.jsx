@@ -32,7 +32,6 @@ class Login extends React.Component {
     // page
     const { email, password } = this.state;
     const { login, history } = this.props;
-    let authKey = '';
 
     if (!email || !password) {
       this.setState({ error: INCOMPLETE_LOGIN });
@@ -45,9 +44,9 @@ class Login extends React.Component {
       axios
         .post('api/users/login', user)
         .then(response => {
-          localStorage.setItem('key', response.data.tokens[0].token);
-          authKey = response.data.tokens[0].token;
-          login(authKey);
+          localStorage.setItem('key', response.data.token);
+          let userid = response.data.user._id;
+          login(userid);
           history.push('/main');
         })
         .catch(err => {

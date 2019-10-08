@@ -30,7 +30,7 @@ class CustomNavbar extends React.Component {
 
     axios
       .post('api/users/logout', null, {
-        headers: { 'x-auth': localStorage.getItem('key') }
+        headers: { Authorization: localStorage.getItem('key') }
       })
       .then(response => {
         logout();
