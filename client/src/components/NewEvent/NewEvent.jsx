@@ -26,7 +26,7 @@ class NewEvent extends React.Component {
 
   geoSuccess = position => {
     const { eventName } = this.state;
-    const { addGroup, history } = this.props;
+    const { history } = this.props;
 
     const newEvent = {
       name: eventName,
@@ -38,7 +38,6 @@ class NewEvent extends React.Component {
         headers: { Authorization: localStorage.getItem('key') }
       })
       .then(response => {
-        addGroup(newEvent);
         history.push('/main');
       })
       .catch(err => {

@@ -1,14 +1,35 @@
 import React from 'react';
+import axios from 'axios';
 import { Container, Row, Col, Button, InputGroup, Input } from 'reactstrap';
 import { FRIENDS_NAME_INCOMPLETE } from '../../actions/types';
-
 
 class Event extends React.Component {
   state = {
     friendsName: '',
     cuisineType: 'chinese',
-    error: ''
+    error: '',
+    group: {
+      id: null,
+      name: null
+    }
   };
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    axios
+      .get(`/api/groups/${id}`, {
+        headers: { Authorization: localStorage.getItem('key') }
+      })
+      .then(response => {
+        this.setState({ group: response.data });
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          error: 'There was an error retrieving the group, please try again.'
+        });
+      });
+  }
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -37,13 +58,13 @@ class Event extends React.Component {
 
   render() {
     const { id } = this.props.match.params;
-    const { error } = this.state;
+    const { error, group } = this.state;
 
     return (
       <Container>
         <Row>
           <Col>
-            <h1>{id}. Team Lunch</h1>
+            <h1>{group.name}</h1>
             <h2>Sep 27</h2>
             {error ? <h3>Error: {error}</h3> : null}
             Select a cuisine type

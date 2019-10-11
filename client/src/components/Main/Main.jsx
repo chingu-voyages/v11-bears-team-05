@@ -11,10 +11,8 @@ class Main extends React.Component {
   };
 
   componentDidMount() {
-    const { userId } = this.props;
-
     axios
-      .get(`api/groups/${userId}`, null, {
+      .get(`api/groups/`, {
         headers: { Authorization: localStorage.getItem('key') }
       })
       .then(response => {
@@ -30,6 +28,7 @@ class Main extends React.Component {
 
   render() {
     const { groups } = this.state;
+    const { userId } = this.props;
 
     return (
       <Container>
@@ -37,13 +36,18 @@ class Main extends React.Component {
           <Col>
             <h1>Main Page</h1>
             <ul>
-              {groups.map((group, ind) => (
-                <li key={ind}>{group.name}</li>
-              ))}
+              {groups.map((group, ind) => {
+                if (group._creator === userId) {
+                  return (
+                    <li key={ind}>
+                      <Link to={`/event/${group._id}`}>{group.name}</Link>
+                    </li>
+                  );
+                } else {
+                  return null;
+                }
+              })}
             </ul>
-            <Link to='/join-event'>
-              <Button color='primary'>Join A Group Event</Button>
-            </Link>
             <Link to='/new-event'>
               <Button color='secondary'>Start A New Group Event</Button>
             </Link>
