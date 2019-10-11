@@ -7,8 +7,43 @@ const auth = require('../middleware/authenticate');
 module.exports = app => {
   const router = express.Router();
 
+  router.post('/joinvote/:id/:cuisine', auth, async (req, res) => {
+    console.log('join vote');
+    const _id = req.params.id;
+    const cuisine = req.params.cuisine;
+    try {
+      const group = await Group.findById(_id);
+      if (!group) {
+        return res.status(404).send();
+      }
+      if (!cuisine) {
+        return res.status(404).send();
+      }
+
+      //check to see if user already voted
+      votes = group.votes;
+      //      console.log({ votes });
+      //const alreadyVoted = await group.find({ 'votes.user': _id });
+      const alreadyVoted = votes.find(vote => vote._id == _id);
+      //    console.log('already voted', alreadyVoted);
+      if (alreadyVoted) {
+        throw Error;
+      }
+
+      //if they haven't voted already
+      cleanedCuisine = cuisine.toLowerCase();
+      group.votes.push({ _id, category: cleanedCuisine });
+
+      await group.save();
+      res.status(201).send(group);
+    } catch (e) {
+      console.log(e);
+      res.status(400).send(e);
+    }
+  });
+
   router.post('/groups', auth, async (req, res) => {
-    console.log('/groups called', req.body.coordinates[0]);
+    //console.log('/groups called', req.body.coordinates[0]);
     var group = new Group({
       name: req.body.name,
       _creator: req.user._id,
@@ -33,8 +68,8 @@ module.exports = app => {
     }
   });
 
-  router.get('/groups/:id', async (req, res) => {
-    const _id = req.params._id;
+  router.get('/groups/:id', auth, async (req, res) => {
+    const _id = req.params.id;
 
     try {
       const group = await Group.findById(_id);
