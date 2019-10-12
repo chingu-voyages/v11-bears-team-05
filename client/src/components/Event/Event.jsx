@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
 import axios from 'axios';
 import { Container, Row, Col, Button, InputGroup, Input } from 'reactstrap';
 import { FRIENDS_NAME_INCOMPLETE } from '../../actions/types';
@@ -20,7 +18,6 @@ class Event extends React.Component {
 
   componentDidMount() {
     const { id } = this.props.match.params;
-    const { coords } = this.props;
 
     axios
       .get(`/api/groups/${id}`, {
@@ -37,7 +34,7 @@ class Event extends React.Component {
       });
 
     axios
-      .get(`/api/cuisines/${coords[0]}/${coords[1]}`, {
+      .get(`/api/cuisines/${id}`, {
         headers: { Authorization: localStorage.getItem('key') }
       })
       .then(response => {
@@ -162,8 +159,4 @@ class Event extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return { coords: state.locationReducer.coords };
-};
-
-export default connect(mapStateToProps)(Event);
+export default Event;

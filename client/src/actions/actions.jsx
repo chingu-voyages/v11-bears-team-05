@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT, RECORD_COORDS } from './types';
+import { LOGIN, LOGOUT } from './types';
 
 export const loginUser = data => {
   return {
@@ -10,12 +10,5 @@ export const loginUser = data => {
 export const logoutUser = () => {
   return {
     type: LOGOUT
-  };
-};
-
-export const recordCoords = coords => {
-  return {
-    type: RECORD_COORDS,
-    payload: coords
   };
 };

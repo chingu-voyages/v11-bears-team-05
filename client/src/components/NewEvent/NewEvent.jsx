@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import axios from 'axios';
 import {
   Container,
@@ -13,7 +12,6 @@ import {
 } from 'reactstrap';
 
 import { INCOMPLETE_NEW_EVENT } from '../../actions/types';
-import { recordCoords } from '../../actions/actions';
 
 class NewEvent extends React.Component {
   state = {
@@ -28,14 +26,12 @@ class NewEvent extends React.Component {
 
   geoSuccess = position => {
     const { eventName } = this.state;
-    const { history, recordCoordinates } = this.props;
+    const { history } = this.props;
 
     const newEvent = {
       name: eventName,
       coordinates: [position.coords.latitude, position.coords.longitude]
     };
-
-    recordCoordinates([position.coords.latitude, position.coords.longitude]);
 
     axios
       .post('api/groups', newEvent, {
@@ -113,11 +109,4 @@ class NewEvent extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  recordCoordinates: coords => dispatch(recordCoords(coords))
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(NewEvent);
+export default NewEvent;

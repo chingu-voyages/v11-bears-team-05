@@ -9,21 +9,32 @@ const config = require('../config/config');
 module.exports = app => {
   const router = express.Router();
 
-  router.get('/cuisines/:lat/:lon', auth, async (req, res) => {
-    console.log('Get cuisines');
-    const { lat, lon } = req.params;
+  router.get('/cuisines/:id', auth, async (req, res) => {
+    const id = req.params.id;
 
-    axios
-      .get(
-        `https://developers.zomato.com/api/v2.1/cuisines?lat=${lat}&lon=${lon}`,
-        {
-          headers: {
-            'user-key': config.zomatoAPIKey
-          }
-        }
-      )
-      .then(result => res.status(200).send(result.data))
-      .catch(err => res.status(404).send());
+    try {
+      const group = await Group.findById(id);
+      if (!group) {
+        return res.status(404).send();
+      } else {
+        axios
+          .get(
+            `https://developers.zomato.com/api/v2.1/cuisines?lat=${
+              group.location.coordinates[0]
+            }&lon=${group.location.coordinates[1]}`,
+            {
+              headers: {
+                'user-key': config.zomatoAPIKey
+              }
+            }
+          )
+          .then(result => res.status(200).send(result.data))
+          .catch(err => res.status(500).send());
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send();
+    }
   });
 
   router.post('/joinvote/:id/:cuisine', auth, async (req, res) => {
