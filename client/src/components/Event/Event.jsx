@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import axios from 'axios';
 import { Container, Row, Col, Button, InputGroup, Input } from 'reactstrap';
 import { FRIENDS_NAME_INCOMPLETE } from '../../actions/types';
@@ -11,11 +13,14 @@ class Event extends React.Component {
     group: {
       id: null,
       name: null
-    }
+    },
+    cuisines: []
   };
 
   componentDidMount() {
     const { id } = this.props.match.params;
+    const { coords } = this.props;
+
     axios
       .get(`/api/groups/${id}`, {
         headers: { Authorization: localStorage.getItem('key') }
@@ -28,6 +33,27 @@ class Event extends React.Component {
         this.setState({
           error: 'There was an error retrieving the group, please try again.'
         });
+      });
+
+    axios
+      .get(
+        `https://developers.zomato.com/api/v2.1/cuisines?lat=${coords[0]}&lon=${
+          coords[1]
+        }`,
+        {
+          headers: {
+            'user-key': 'ZOMATO_API_KEY_HERE'
+          }
+        }
+      )
+      .then(response => {
+        this.setState({
+          cuisines: response.data.cuisines,
+          cuisineType: response.data.cuisines[0].cuisine.cuisine_name
+        });
+      })
+      .catch(err => {
+        console.log(err);
       });
   }
 
@@ -52,13 +78,27 @@ class Event extends React.Component {
   };
 
   submitVote = e => {
-    const { cuisineType } = this.state;
-    console.log(cuisineType);
+    const { cuisineType, group } = this.state;
+    const { history } = this.props;
+
+    axios
+      .post(`/api/joinvote/${group._id}/${cuisineType}`, null, {
+        headers: { Authorization: localStorage.getItem('key') }
+      })
+      .then(response => {
+        history.push('/main');
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          error: 'There was an error voting for the cuisine, please try again.'
+        });
+      });
   };
 
   render() {
     const { id } = this.props.match.params;
-    const { error, group } = this.state;
+    const { error, group, cuisines } = this.state;
 
     return (
       <Container>
@@ -74,10 +114,14 @@ class Event extends React.Component {
               onChange={this.handleChange}
               value={this.cuisineType}
             >
-              <option value='chinese'>Chinese</option>
-              <option value='greek'>Greek</option>
-              <option value='italian'>Italian</option>
-              <option value='ukranian'>Ukranian</option>
+              {cuisines.map(cuisine => (
+                <option
+                  value={cuisine.cuisine.cuisine_name}
+                  key={cuisine.cuisine.cuisine_id}
+                >
+                  {cuisine.cuisine.cuisine_name}
+                </option>
+              ))}
             </select>
             <Button color='primary' onClick={this.submitVote}>
               Vote
@@ -121,4 +165,6 @@ class Event extends React.Component {
   }
 }
 
-export default Event;
+const mapStateToProps = state => ({ coords: state.locationReducer.coords });
+
+export default connect(mapStateToProps)(Event);

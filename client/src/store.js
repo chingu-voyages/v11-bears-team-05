@@ -1,8 +1,9 @@
-import { createStore, combineReducers,applyMiddleware, compose } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import loginReducer from './reducers/loginReducer';
+import locationReducer from './reducers/locationReducer';
 
-const allReducers = combineReducers({ loginReducer });
+const allReducers = combineReducers({ loginReducer, locationReducer });
 
 const initialState = {};
 const middleware = [thunk];
@@ -15,8 +16,7 @@ const configureStore = () => {
     allReducers,
     initialState,
     composeEnhancers(applyMiddleware(...middleware))
-    
-    );
+  );
 };
 
 export default configureStore;
