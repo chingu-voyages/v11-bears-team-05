@@ -1,11 +1,30 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Group = mongoose.model('groups');
+const axios = require('axios');
 
 const auth = require('../middleware/authenticate');
+const config = require('../config/config');
 
 module.exports = app => {
   const router = express.Router();
+
+  router.get('/cuisines/:lat/:lon', auth, async (req, res) => {
+    console.log('Get cuisines');
+    const { lat, lon } = req.params;
+
+    axios
+      .get(
+        `https://developers.zomato.com/api/v2.1/cuisines?lat=${lat}&lon=${lon}`,
+        {
+          headers: {
+            'user-key': config.zomatoAPIKey
+          }
+        }
+      )
+      .then(result => res.status(200).send(result.data))
+      .catch(err => res.status(404).send());
+  });
 
   router.post('/joinvote/:id/:cuisine', auth, async (req, res) => {
     console.log('join vote');

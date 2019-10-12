@@ -37,16 +37,9 @@ class Event extends React.Component {
       });
 
     axios
-      .get(
-        `https://developers.zomato.com/api/v2.1/cuisines?lat=${coords[0]}&lon=${
-          coords[1]
-        }`,
-        {
-          headers: {
-            'user-key': 'ZOMATO_API_KEY_HERE'
-          }
-        }
-      )
+      .get(`/api/cuisines/${coords[0]}/${coords[1]}`, {
+        headers: { Authorization: localStorage.getItem('key') }
+      })
       .then(response => {
         this.setState({
           cuisines: response.data.cuisines,
@@ -169,6 +162,8 @@ class Event extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ coords: state.locationReducer.coords });
+const mapStateToProps = state => {
+  return { coords: state.locationReducer.coords };
+};
 
 export default connect(mapStateToProps)(Event);

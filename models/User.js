@@ -80,9 +80,7 @@ UserSchema.statics.findByToken = function(token) {
 };
 
 UserSchema.statics.findByCredentials = async (email, password) => {
-  console.log('find by', email);
   const user = await User.findOne({ email });
-  console.log('login user', user);
   if (!user) {
     throw new Error('Unable to log in.');
   }

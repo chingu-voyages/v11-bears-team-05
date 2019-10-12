@@ -28,14 +28,14 @@ class NewEvent extends React.Component {
 
   geoSuccess = position => {
     const { eventName } = this.state;
-    const { history } = this.props;
+    const { history, recordCoordinates } = this.props;
 
     const newEvent = {
       name: eventName,
       coordinates: [position.coords.latitude, position.coords.longitude]
     };
 
-    recordCoords([position.coords.latitude, position.coords.longitude]);
+    recordCoordinates([position.coords.latitude, position.coords.longitude]);
 
     axios
       .post('api/groups', newEvent, {

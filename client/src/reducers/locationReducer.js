@@ -5,6 +5,7 @@ const defaultState = {
 };
 
 const locationReducer = (state = defaultState, action) => {
+  console.log('location reducer', action.payload);
   switch (action.type) {
     case RECORD_COORDS:
       return {
