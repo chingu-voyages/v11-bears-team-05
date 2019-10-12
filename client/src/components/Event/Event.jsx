@@ -12,7 +12,8 @@ class Event extends React.Component {
     error: '',
     group: {
       id: null,
-      name: null
+      name: null,
+      votes: []
     },
     cuisines: []
   };
@@ -54,6 +55,9 @@ class Event extends React.Component {
       })
       .catch(err => {
         console.log(err);
+        this.setState({
+          error: 'There was an error retrieving the cuisines, please try again.'
+        });
       });
   }
 
@@ -91,13 +95,13 @@ class Event extends React.Component {
       .catch(err => {
         console.log(err);
         this.setState({
-          error: 'There was an error voting for the cuisine, please try again.'
+          error:
+            'There was an error voting for the cuisine, or you already voted for this event!'
         });
       });
   };
 
   render() {
-    const { id } = this.props.match.params;
     const { error, group, cuisines } = this.state;
 
     return (
@@ -147,9 +151,9 @@ class Event extends React.Component {
           <Col>
             <h2>Current Votes</h2>
             <ul>
-              <li>Chinese - 3</li>
-              <li>Greek - 2</li>
-              <li>Italian - 1</li>
+              {group.votes.map(vote => (
+                <li key={vote._id}>{vote.category}</li>
+              ))}
             </ul>
           </Col>
         </Row>

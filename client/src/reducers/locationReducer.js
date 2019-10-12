@@ -11,7 +11,6 @@ const locationReducer = (state = defaultState, action) => {
         ...state,
         coords: action.payload
       };
-      break;
     default:
       return state;
   }

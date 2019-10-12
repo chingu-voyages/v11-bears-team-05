@@ -7,8 +7,6 @@ import Register from './components/Register/Register';
 import Main from './components/Main/Main';
 import NewEvent from './components/NewEvent/NewEvent';
 import Event from './components/Event/Event';
-import JoinEvent from './components/JoinEvent/JoinEvent';
-
 
 function App() {
   return (
@@ -21,7 +19,6 @@ function App() {
         <Route path='/main' component={Main} />
         <Route path='/new-event' component={NewEvent} />
         <Route path='/event/:id' component={Event} />
-        <Route path='/join-event' component={JoinEvent} />
       </div>
     </div>
   );
